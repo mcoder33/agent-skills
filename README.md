@@ -25,6 +25,18 @@
 
 Для работы с Go-кодом попробуйте `$go-development`, для обсуждения неясной задачи — `$dialogue-explore`. [Примеры запросов и ожидаемых результатов](docs/usage.md) помогут проверить первый запуск.
 
+### Claude Code
+
+Репозиторий также является маркетплейсом плагинов Claude Code — навыки ставятся прямо из него:
+
+```text
+/plugin install codex-skills --marketplace mcoder33/codex-skills
+/plugin install go-development --marketplace mcoder33/codex-skills
+/plugin install grafana-dashboards --marketplace mcoder33/codex-skills
+```
+
+Вызов: `/codex-skills:clear-communication …` вместо `$clear-communication …`. Состав плагинов, постоянный режим и карта Obsidian — в [руководстве для Claude Code](docs/claude-code.md).
+
 ## Какой навык выбрать
 
 | Ваша задача | Навык | Что должно получиться |
@@ -48,6 +60,7 @@
 ## Установка и использование
 
 - **[Установка](docs/installation.md):** один навык, пара dialogue, Obsidian, профили моделей, обновление и откат.
+- **[Claude Code](docs/claude-code.md):** установка плагинами из этого репозитория, вызов навыков, `CLAUDE.md` и обновление.
 - **[Практические примеры](docs/usage.md):** что написать, какой результат проверить и как продолжить работу.
 - **[Устранение проблем](docs/installation.md#если-что-то-не-работает):** навык не виден, карта не сохраняется, модель недоступна.
 - **[Внесение изменений](CONTRIBUTING.md):** структура навыка, локальные проверки и PR.
@@ -74,6 +87,7 @@ Runtime не нужен для обычного вызова навыка. Ре�
 
 ```text
 skills/          Навыки: SKILL.md, справочники, скрипты и UI-метаданные
+.claude-plugin/  Маркетплейс плагинов Claude Code поверх skills/
 agents/          Четыре резервных профиля подагентов
 config/          Фрагменты инструкций и конфигурации для ручного слияния
 vault-template/  Вымышленный пример связанных заметок Obsidian

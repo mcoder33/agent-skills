@@ -67,6 +67,17 @@ class RepositoryValidationTests(unittest.TestCase):
                    "\n```md\n[example](missing.md)\n```\n[web](https://example.org)\n")
         self.assertEqual([], validator.validate_local_links(self.root, self.files))
 
+    def test_marketplace_points_at_tracked_skills(self):
+        entry = '{"plugins": [{"name": "kit", "source": "./", "skills": [%s]}]}'
+        catalog = self.write(".claude-plugin/marketplace.json", entry % '"./skills/example"')
+        self.assertEqual([], validator.validate_structure(self.root, self.files))
+        for content in [entry % '"./skills/missing"', entry % '"./other/example"', entry % "",
+                        '{"plugins": [{"name": "kit", "source": "./other", "skills": ["./skills/example"]}]}',
+                        '{"plugins": []}', "{broken"]:
+            with self.subTest(content=content):
+                catalog.write_text(content)
+                self.assertTrue(validator.validate_structure(self.root, self.files))
+
     def test_vault_link_resolution(self):
         page = self.write("vault-template/Index.md", "[[Folder/Note|Alias]]")
         self.assertTrue(validator.validate_local_links(self.root, self.files))
