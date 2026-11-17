@@ -1,0 +1,45 @@
+{
+  "name": "codex-skills",
+  "description": "Навыки codex-skills для Claude Code: ясное изложение, адаптивный диалог, разбор и проверка планов, глубина реализации и проверок, Go и Grafana.",
+  "owner": {
+    "name": "mcoder33",
+    "url": "https://github.com/mcoder33"
+  },
+  "plugins": [
+    {
+      "name": "codex-skills",
+      "source": "./",
+      "description": "Общие навыки: clear-communication, adaptive-dialogue, dialogue-explore, dialogue-validate, nasa, effort, checks.",
+      "homepage": "https://github.com/mcoder33/codex-skills",
+      "repository": "https://github.com/mcoder33/codex-skills",
+      "keywords": ["communication", "dialogue", "planning", "obsidian"],
+      "skills": [
+        "./skills/clear-communication",
+        "./skills/adaptive-dialogue",
+        "./skills/dialogue-explore",
+        "./skills/dialogue-validate",
+        "./skills/nasa",
+        "./skills/effort",
+        "./skills/checks"
+      ]
+    },
+    {
+      "name": "go-development",
+      "source": "./",
+      "description": "Проектирование, разработка и ревью Go-кода: законченные операции, владение данными, конкурентность, жизненный цикл сервиса.",
+      "homepage": "https://github.com/mcoder33/codex-skills",
+      "repository": "https://github.com/mcoder33/codex-skills",
+      "keywords": ["go", "golang", "code-review"],
+      "skills": ["./skills/go-development"]
+    },
+    {
+      "name": "grafana-dashboards",
+      "source": "./",
+      "description": "Создание, изменение и аудит дашбордов Grafana с проверкой метрик, запросов и отображения.",
+      "homepage": "https://github.com/mcoder33/codex-skills",
+      "repository": "https://github.com/mcoder33/codex-skills",
+      "keywords": ["grafana", "dashboards", "observability"],
+      "skills": ["./skills/grafana-dashboards"]
+    }
+  ]
+}

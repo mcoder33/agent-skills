@@ -1,5 +1,6 @@
 """Validate portable skill metadata and repository-local Markdown targets."""
 import argparse
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -42,6 +43,38 @@ def validate_structure(root, files):
             errors.append(f"skills/{name}: nonempty description required")
         if not text[match.end():].strip():
             errors.append(f"skills/{name}: empty skill body")
+    errors.extend(validate_marketplace(root, files, skill_directories))
+    return errors
+
+
+def validate_marketplace(root, files, skill_directories):
+    """Claude Code plugins must point only at tracked skills of this repository."""
+    path = root / ".claude-plugin" / "marketplace.json"
+    if path not in files:
+        return []
+    label = ".claude-plugin/marketplace.json"
+    try:
+        catalog = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        return [f"{label}: invalid JSON ({error.msg})"]
+    plugins = catalog.get("plugins") if isinstance(catalog, dict) else None
+    if not isinstance(plugins, list) or not plugins:
+        return [f"{label}: plugins list required"]
+    errors, names = [], set()
+    for index, plugin in enumerate(plugins):
+        name = plugin.get("name") if isinstance(plugin, dict) else None
+        if not isinstance(name, str) or name in names:
+            errors.append(f"{label}: plugins[{index}] needs a unique name")
+            continue
+        names.add(name)
+        skills = plugin.get("skills")
+        if plugin.get("source") != "./" or not isinstance(skills, list) or not skills:
+            errors.append(f"{label}: {name} must use source ./ with a nonempty skills list")
+            continue
+        for entry in skills:
+            match = re.fullmatch(r"\./skills/([a-z0-9]+(?:-[a-z0-9]+)*)/?", entry) if isinstance(entry, str) else None
+            if not match or match.group(1) not in skill_directories:
+                errors.append(f"{label}: {name} lists unknown skill {entry!r}")
     return errors
 
 
