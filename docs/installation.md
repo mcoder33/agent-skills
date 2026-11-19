@@ -55,7 +55,7 @@ fi
 
 ## Утилиты ub-mode
 
-`ub-mode` перенесён без изменений из [unclebob/ub-mode](https://github.com/unclebob/ub-mode) под лицензией MIT ([текст](../skills/ub-mode/LICENSE)). Его метрики снимают утилиты того же автора: [crapper](https://github.com/unclebob/crapper) — CRAP, [dryer](https://github.com/unclebob/dryer) — дубли, [mutator](https://github.com/unclebob/mutator) — мутации. Нужны git и Python 3.11 или новее. mutator импортирует crapper, поэтому ставьте утилиты в одно окружение:
+`ub-mode` перенесён из [unclebob/ub-mode](https://github.com/unclebob/ub-mode) под лицензией MIT ([текст](../skills/ub-mode/LICENSE)). Текст навыка не менялся; только `description` во frontmatter записан одной строкой в кавычках вместо блока `>`, чтобы его надёжно разбирали все клиенты. Его метрики снимают утилиты того же автора: [crapper](https://github.com/unclebob/crapper) — CRAP, [dryer](https://github.com/unclebob/dryer) — дубли, [mutator](https://github.com/unclebob/mutator) — мутации. Нужны git и Python 3.11 или новее. mutator импортирует crapper, поэтому ставьте утилиты в одно окружение:
 
 ```sh
 TOOLS_HOME="$HOME/.local/share/ub-mode-tools"   # выберите свой каталог
