@@ -33,7 +33,7 @@ else
 fi
 ```
 
-Для первого запуска `clear-communication` или `go-development` замените `SKILL_NAME` в этом же примере. Для Go-разработки нужен toolchain и штатные проверки целевого проекта; отдельные модели, Obsidian и книга не требуются.
+Для первого запуска `clear-communication` или `go-development` замените `SKILL_NAME` в этом же примере. Для Go-разработки нужен toolchain и штатные проверки целевого проекта, а рядом с `go-development` — каталог `ub-mode`: скопируйте его тем же способом. Отдельные модели, Obsidian и книга не требуются.
 
 Копируйте каталог целиком: ссылки из `SKILL.md` могут вести в `references/`, `scripts/` или другие вложенные каталоги. Для другого самостоятельного навыка замените `SKILL_NAME`.
 
@@ -43,7 +43,8 @@ fi
 
 | Навык или возможность | Что добавить |
 | --- | --- |
-| `adaptive-dialogue`, `clear-communication`, `go-development` | Для базового вызова достаточно каталога навыка |
+| `adaptive-dialogue`, `clear-communication` | Для базового вызова достаточно каталога навыка |
+| `go-development`, `ub-mode` | Оба каталога: go-development вызывает ub-mode. Для метрик ub-mode — [утилиты crapper, dryer и mutator](#утилиты-ub-mode) |
 | `grafana-dashboards` | JSON или доступ к Grafana и данным; UI/renderer для визуальной проверки |
 | `dialogue-explore` и `dialogue-validate` | Установите оба каталога: validate ссылается на контракт внутри explore |
 | `nasa` | Собственные справочники входят в каталог; для сохранения карты укажите разрешённое хранилище |
@@ -51,6 +52,25 @@ fi
 | `delegation-stats` | Локальные журналы Codex, Python и отдельная [настройка статистики](telemetry.md) |
 | `session-retrospective` | Два dialogue-навыка, журналы, исполнители и независимое ревью; [условия применения](retrospective.md) |
 | Runtime/hooks | Отдельная [установка runtime](skill-runtime.md) и совместимая версия клиента |
+
+## Утилиты ub-mode
+
+`ub-mode` перенесён без изменений из [unclebob/ub-mode](https://github.com/unclebob/ub-mode) под лицензией MIT ([текст](../skills/ub-mode/LICENSE)). Его метрики снимают утилиты того же автора: [crapper](https://github.com/unclebob/crapper) — CRAP, [dryer](https://github.com/unclebob/dryer) — дубли, [mutator](https://github.com/unclebob/mutator) — мутации. Нужны git и Python 3.11 или новее. mutator импортирует crapper, поэтому ставьте утилиты в одно окружение:
+
+```sh
+TOOLS_HOME="$HOME/.local/share/ub-mode-tools"   # выберите свой каталог
+mkdir -p "$TOOLS_HOME" "$HOME/.local/bin"
+for tool in crapper dryer mutator; do
+  git clone "https://github.com/unclebob/$tool" "$TOOLS_HOME/$tool"
+done
+python3 -m venv "$TOOLS_HOME/venv"   # python3 должен быть 3.11 или новее
+"$TOOLS_HOME/venv/bin/python" -m pip install "$TOOLS_HOME/crapper" "$TOOLS_HOME/dryer" "$TOOLS_HOME/mutator"
+for tool in crapper dryer mutator; do
+  ln -sf "$TOOLS_HOME/venv/bin/$tool" "$HOME/.local/bin/$tool"
+done
+```
+
+Проверьте `crapper --help`, `dryer --help` и `mutator --help`, затем `crapper --no-coverage <каталог пакета>` на небольшом Go-пакете. Без утилит навыки работают, но сообщают о пропущенных метриках. Для обновления выполните `git pull` в каталоге утилиты и повторите установку в то же окружение с `--force-reinstall --no-deps`.
 
 ## Карта обсуждений в Obsidian
 

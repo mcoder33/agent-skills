@@ -26,11 +26,11 @@
     {
       "name": "go-development",
       "source": "./",
-      "description": "Проектирование, разработка и ревью Go-кода: законченные операции, владение данными, конкурентность, жизненный цикл сервиса.",
+      "description": "Проектирование, разработка и ревью Go-кода: законченные операции, владение данными, конкурентность, жизненный цикл сервиса; вместе с обязательным ub-mode (тест первым, CRAP, дубли, мутации).",
       "homepage": "https://github.com/mcoder33/codex-skills",
       "repository": "https://github.com/mcoder33/codex-skills",
-      "keywords": ["go", "golang", "code-review"],
-      "skills": ["./skills/go-development"]
+      "keywords": ["go", "golang", "code-review", "tdd", "mutation-testing"],
+      "skills": ["./skills/go-development", "./skills/ub-mode"]
     },
     {
       "name": "grafana-dashboards",
