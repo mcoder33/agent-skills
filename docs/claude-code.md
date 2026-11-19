@@ -9,7 +9,7 @@
 | Плагин | Навыки | Вызов |
 | --- | --- | --- |
 | `codex-skills` | clear-communication, adaptive-dialogue, dialogue-explore, dialogue-validate, nasa, effort, checks | `/codex-skills:<навык>` |
-| `go-development` | go-development | `/go-development:go-development` |
+| `go-development` | go-development, ub-mode | `/go-development:go-development`, `/go-development:ub-mode` |
 | `grafana-dashboards` | grafana-dashboards | `/grafana-dashboards:grafana-dashboards` |
 
 Плагины независимы: ставьте только нужные. Если такой же навык уже приходит из другого плагина, второй экземпляр не ставьте — иначе при автоматическом выборе Claude увидит два навыка с одинаковым описанием.
