@@ -57,7 +57,7 @@ fi
 
 ## Утилиты ub-mode
 
-`ub-mode` перенесён из [unclebob/ub-mode](https://github.com/unclebob/ub-mode) под лицензией MIT ([текст](../skills/ub-mode/LICENSE)). Текст навыка не менялся; только `description` во frontmatter записан одной строкой в кавычках вместо блока `>`, чтобы его надёжно разбирали все клиенты. Его метрики снимают утилиты того же автора: [crapper](https://github.com/unclebob/crapper) — CRAP, [dryer](https://github.com/unclebob/dryer) — дубли, [mutator](https://github.com/unclebob/mutator) — мутации. Нужны git и Python 3.11 или новее. mutator импортирует crapper, поэтому ставьте утилиты в одно окружение:
+`ub-mode` перенесён из [unclebob/ub-mode](https://github.com/unclebob/ub-mode) под лицензией MIT ([текст](../skills/ub-mode/LICENSE)). В локальной версии уточнены полномочия на commit/push и выбор проверок для малых правок. Его метрики снимают утилиты того же автора: [crapper](https://github.com/unclebob/crapper) — CRAP, [dryer](https://github.com/unclebob/dryer) — дубли, [mutator](https://github.com/unclebob/mutator) — мутации. Нужны git и Python 3.11 или новее. mutator импортирует crapper, поэтому ставьте утилиты в одно окружение:
 
 ```sh
 TOOLS_HOME="$HOME/.local/share/ub-mode-tools"   # выберите свой каталог
@@ -72,7 +72,7 @@ for tool in crapper dryer mutator; do
 done
 ```
 
-Проверьте `crapper --help`, `dryer --help` и `mutator --help`, затем `crapper --no-coverage <каталог пакета>` на небольшом Go-пакете. Без утилит навыки работают, но сообщают о пропущенных метриках. Для обновления выполните `git pull` в каталоге утилиты и повторите установку в то же окружение с `--force-reinstall --no-deps`.
+Проверьте `crapper --help`, `dryer --help` и `mutator --help`, затем `crapper --no-coverage <каталог пакета>` на небольшом Go-пакете. Если нужная для правки утилита недоступна, навык сообщает о пропущенной проверке. Для обновления выполните `git pull` в каталоге утилиты и повторите установку в то же окружение с `--force-reinstall --no-deps`.
 
 ## Карта обсуждений в Obsidian
 
