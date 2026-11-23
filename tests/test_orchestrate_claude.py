@@ -200,6 +200,29 @@ class ClaudeTaskTests(unittest.TestCase):
             self.assertNotIn("-p", entry["args"])
             self.assertNotIn("--dangerously-skip-permissions", entry["args"])
 
+    def test_workspace_root_query_and_resume_keep_public_project_selector(self):
+        linked_root = self.root / "linked-projects"
+        linked_root.symlink_to(self.projects, target_is_directory=True)
+        config = json.loads(self.config.read_text())
+        config["workspace"]["vm_root"] = str(linked_root)
+        self.config.write_text(json.dumps(config))
+        self.command("start", "general", "--project", ".", prompt="general question")
+        first = self.answered("general")
+        retried = self.command("start", "general", "--project", ".", prompt="general question")
+        self.assertEqual(retried["session_id"], first["session_id"])
+        self.assertEqual(first["project"], ".")
+        self.assertEqual(len(self.entries()), 1)
+        self.command("finish", "general", "--turn", first["turn"])
+        self.wait_state("general", "closed")
+        self.command("resume", "general", "--request-id", "root-resume", prompt="continue")
+        resumed = self.answered("general")
+        self.assertEqual(resumed["project"], ".")
+        self.assertEqual(resumed["session_id"], first["session_id"])
+        for entry in self.entries():
+            args = entry["args"]
+            self.assertEqual(args[args.index("--path") + 1], str(self.projects.resolve()))
+        self.command("finish", "general", "--turn", resumed["turn"])
+
     def test_retried_submission_does_not_send_prompt_twice(self):
         self.command("start", "review", "--project", "team/repo", prompt="first")
         self.answered("review")

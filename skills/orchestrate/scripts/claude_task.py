@@ -163,7 +163,7 @@ def launch_agent(args, path):
         state.update(status="running", pane_pid=str(os.getpid()))
         save(path, state)
         command = [state["launcher"], "agent", "claude", "--config", str(args.config),
-                   "--path", state["project"], "--"]
+                   "--path", state.get("workspace_root", state["project"]), "--"]
         command += ["--resume" if state.get("resume") else "--session-id", state["session_id"]]
         command += ["--settings", json.dumps(hook_settings(args, state["generation"])), "--", state["prompt"]]
     try:
@@ -279,6 +279,11 @@ def manage(args, path):
                      "launcher": str(Path(workspace["remote_dir"]) / "bin" / "stealthbox"),
                      "tmux_session": workspace.get("name") or "stealthbox",
                      "session_id": str(uuid.uuid4()), "resume": False, "has_history": False}
+            if args.project == ".":
+                root = Path(workspace.get("vm_root", "")).expanduser()
+                if not root.is_absolute():
+                    raise TaskError("workspace.vm_root must be set for a project-free question")
+                state["workspace_root"] = str(root.resolve(strict=True))
             new_turn(state, prompt, "start")
             create_window(args, path, state)
             return public(state)
