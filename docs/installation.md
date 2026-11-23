@@ -45,6 +45,7 @@ fi
 | --- | --- |
 | `adaptive-dialogue`, `clear-communication` | Для базового вызова достаточно каталога навыка |
 | `claude` | Установите рядом каталоги `claude` и `orchestrate` из одной версии. Для связи с ВМ нужен [настроенный профиль StealthBox](../skills/orchestrate/references/stealthbox-claude.md). |
+| `kimi` | Установите каталог `skills/kimi`. В том же окружении должны быть доступны Python 3 и команда `kimi acp` с рабочим профилем Kimi Code. [Пример вызова](../skills/kimi/SKILL.md). |
 | `go-development`, `ub-mode` | Оба каталога: go-development вызывает ub-mode. Для метрик ub-mode — [утилиты crapper, dryer и mutator](#утилиты-ub-mode) |
 | `grafana-dashboards` | JSON или доступ к Grafana и данным; UI/renderer для визуальной проверки |
 | `dialogue-explore` и `dialogue-validate` | Установите оба каталога: validate ссылается на контракт внутри explore |

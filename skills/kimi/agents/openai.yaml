@@ -1,0 +1,4 @@
+interface:
+  display_name: "Спросить Kimi"
+  short_description: "Прямой вопрос Kimi Code на этом компьютере"
+  default_prompt: "$kimi Объясни, что даёт стабильная сортировка."
