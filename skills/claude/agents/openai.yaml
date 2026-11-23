@@ -1,0 +1,4 @@
+interface:
+  display_name: "Спросить Claude"
+  short_description: "Прямой вопрос Claude Code через StealthBox"
+  default_prompt: "$claude Объясни, чем git fetch отличается от git pull."
