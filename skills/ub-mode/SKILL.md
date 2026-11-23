@@ -86,6 +86,10 @@ Every time you are asked to make a change follow:
 
 # Then Make it Right
 
+For small changes, run the project's required checks. Apply the three tool sections below
+only when required or relevant. Use crapper for complex branching, dryer for suspected
+duplication, and mutator when tests may miss a change in behavior.
+
 ## Fix Root Causes
 
 * Reproduce it.
@@ -144,6 +148,6 @@ Every time you are asked to make a change follow:
 
 ## Commit and Push
 
-* Commit often, in small ordered commits.
+* When authorized to commit, make small ordered commits.
 * Each commit says why, what changed, and how you proved it.
-* Push to the main line at the end.
+* Push only when the user authorizes it, to a branch allowed by the user and the project's contribution rules.
