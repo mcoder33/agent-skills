@@ -200,6 +200,76 @@ class ClaudeTaskTests(unittest.TestCase):
             self.assertNotIn("-p", entry["args"])
             self.assertNotIn("--dangerously-skip-permissions", entry["args"])
 
+    def test_model_and_effort_defaults_keep_existing_profile_and_old_state_readable(self):
+        self.command("start", "defaults", "--project", "team/repo", prompt="first")
+        first = self.answered("defaults")
+        self.assertNotIn("requested_model", first)
+        self.assertNotIn("requested_effort", first)
+        self.command("finish", "defaults", "--turn", first["turn"])
+        state_path = next((self.root / "state").rglob("state.json"))
+        state = json.loads(state_path.read_text())
+        for request in state["requests"].values():
+            request.pop("launch_options", None)
+        state_path.write_text(json.dumps(state))
+        self.command("resume", "defaults", "--request-id", "resume", prompt="next")
+        resumed = self.answered("defaults")
+        for entry in self.entries():
+            self.assertNotIn("--model", entry["args"])
+            self.assertNotIn("--effort", entry["args"])
+        self.command("finish", "defaults", "--turn", resumed["turn"])
+
+    def test_model_and_effort_are_inherited_and_overridden_on_resume(self):
+        self.command("start", "selected", "--project", "team/repo", "--model", "sonnet",
+                     "--effort", "high", prompt="first")
+        first = self.answered("selected")
+        self.assertEqual((first["requested_model"], first["requested_effort"]), ("sonnet", "high"))
+        self.command("reply", "selected", "--request-id", "reply", prompt="followup")
+        reply = self.answered("selected")
+        self.command("finish", "selected", "--turn", reply["turn"])
+        self.command("resume", "selected", "--request-id", "inherited", prompt="inherited")
+        inherited = self.answered("selected")
+        self.assertEqual((inherited["requested_model"], inherited["requested_effort"]), ("sonnet", "high"))
+        self.command("finish", "selected", "--turn", inherited["turn"])
+        self.command("resume", "selected", "--request-id", "effort", "--effort", "max", prompt="effort")
+        effort = self.answered("selected")
+        self.assertEqual((effort["requested_model"], effort["requested_effort"]), ("sonnet", "max"))
+        self.command("finish", "selected", "--turn", effort["turn"])
+        model = "claude-opus-test-20260101"
+        self.command("resume", "selected", "--request-id", "both", "--model", model,
+                     "--effort", "xhigh", prompt="both")
+        both = self.answered("selected")
+        self.assertEqual((both["requested_model"], both["requested_effort"]), (model, "xhigh"))
+        expected = [("sonnet", "high"), ("sonnet", "high"), ("sonnet", "high"),
+                    ("sonnet", "max"), (model, "xhigh")]
+        for entry, choice in zip(self.entries(), expected):
+            args = entry["args"]
+            self.assertEqual((args[args.index("--model") + 1], args[args.index("--effort") + 1]), choice)
+        self.assertEqual(len(self.entries()), len(expected))
+        self.command("finish", "selected", "--turn", both["turn"])
+
+    def test_retried_launch_rejects_changed_model_or_effort(self):
+        options = ("--model", "sonnet", "--effort", "low")
+        self.command("start", "retry", "--project", "team/repo", *options, prompt="first")
+        first = self.answered("retry")
+        self.command("start", "retry", "--project", "team/repo", *options, prompt="first")
+        for altered in (("--model", "opus", "--effort", "low"),
+                        ("--model", "sonnet", "--effort", "medium"), ()):
+            rejected = self.command("start", "retry", "--project", "team/repo", *altered,
+                                    prompt="first", check=False)
+            self.assertNotEqual(rejected.returncode, 0)
+        self.command("finish", "retry", "--turn", first["turn"])
+        self.command("resume", "retry", "--request-id", "resume", "--model", "opus", prompt="next")
+        resumed = self.answered("retry")
+        self.assertEqual((resumed["requested_model"], resumed["requested_effort"]), ("opus", "low"))
+        self.command("resume", "retry", "--request-id", "resume", "--model", "opus", prompt="next")
+        for altered in (("--model", "sonnet"), ("--model", "opus", "--effort", "high"), ()):
+            rejected = self.command("resume", "retry", "--request-id", "resume", *altered,
+                                    prompt="next", check=False)
+            self.assertNotEqual(rejected.returncode, 0)
+        self.assertEqual(len(self.entries()), 2)
+        self.assertEqual(self.command("status", "retry")["turn"], resumed["turn"])
+        self.command("finish", "retry", "--turn", resumed["turn"])
+
     def test_workspace_root_query_and_resume_keep_public_project_selector(self):
         linked_root = self.root / "linked-projects"
         linked_root.symlink_to(self.projects, target_is_directory=True)

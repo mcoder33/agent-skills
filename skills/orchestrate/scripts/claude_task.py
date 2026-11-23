@@ -82,17 +82,22 @@ def digest(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def new_turn(state, prompt, request_id):
+def new_turn(state, prompt, request_id, launch_options=None):
     state.pop("error", None)
     state.update(turn=str(uuid.uuid4()), prompt=prompt, submitted=False,
                  answer=None, background_tasks=[], session_crons=[], status="running")
     state.setdefault("requests", {})[request_id] = {"prompt_sha256": digest(prompt), "turn": state["turn"]}
+    if launch_options is not None:
+        state["requests"][request_id]["launch_options"] = launch_options
+        state.update(("requested_" + name, value) for name, value in launch_options.items())
 
 
-def repeated(state, request_id, prompt):
+def repeated(state, request_id, prompt, launch_options=None):
     request = state.get("requests", {}).get(request_id)
     if request and request["prompt_sha256"] != digest(prompt):
         raise TaskError("request-id already belongs to a different prompt")
+    if request and request.get("launch_options", {}) != (launch_options or {}):
+        raise TaskError("request-id already belongs to different model or effort options")
     return request is not None
 
 
@@ -165,6 +170,9 @@ def launch_agent(args, path):
         command = [state["launcher"], "agent", "claude", "--config", str(args.config),
                    "--path", state.get("workspace_root", state["project"]), "--"]
         command += ["--resume" if state.get("resume") else "--session-id", state["session_id"]]
+        for option in ("model", "effort"):
+            if "requested_" + option in state:
+                command += ["--" + option, state["requested_" + option]]
         command += ["--settings", json.dumps(hook_settings(args, state["generation"])), "--", state["prompt"]]
     try:
         result = subprocess.run(command)
@@ -215,7 +223,8 @@ def receive_hook(args, path):
 
 def public(state):
     keys = ("task", "status", "project", "session_id", "turn", "answer", "pane_id",
-            "window_id", "background_tasks", "session_crons", "error")
+            "window_id", "background_tasks", "session_crons", "error",
+            "requested_model", "requested_effort")
     return {key: state[key] for key in keys if key in state}
 
 
@@ -267,6 +276,8 @@ def expose(state, path):
 
 def manage(args, path):
     prompt = prompt_text() if args.command in {"start", "reply", "resume"} else None
+    launch_options = {name: getattr(args, name) for name in ("model", "effort")
+                      if getattr(args, name, None) is not None}
     ready = ready_snapshot(args, path)
     with locked(path):
         if args.command == "start" and not path.exists():
@@ -284,17 +295,17 @@ def manage(args, path):
                 if not root.is_absolute():
                     raise TaskError("workspace.vm_root must be set for a project-free question")
                 state["workspace_root"] = str(root.resolve(strict=True))
-            new_turn(state, prompt, "start")
+            new_turn(state, prompt, "start", launch_options)
             create_window(args, path, state)
             return public(state)
         state = refresh(read(path))
         if ready is not None and ready != (state["generation"], state["turn"]):
             raise TaskError("task changed while checking readiness; read its current state")
         if args.command == "start":
-            if args.project != state["project"] or not repeated(state, "start", prompt):
+            if args.project != state["project"] or not repeated(state, "start", prompt, launch_options):
                 raise TaskError("task already exists with different launch parameters")
         elif args.command in {"reply", "resume"}:
-            if not repeated(state, args.request_id, prompt):
+            if not repeated(state, args.request_id, prompt, launch_options):
                 if args.command == "reply":
                     if state["status"] not in {"answered", "failed"} or not owns_pane(state):
                         raise TaskError("reply needs an answered or failed task with a live owned pane")
@@ -308,7 +319,7 @@ def manage(args, path):
                     if state["status"] not in {"closed", "lost", "exited", "launch_failed"}:
                         raise TaskError("resume needs a closed, exited, lost, or failed launch")
                     state["resume"] = state.get("has_history", state["submitted"] or len(state["requests"]) > 1)
-                    new_turn(state, prompt, args.request_id)
+                    new_turn(state, prompt, args.request_id, launch_options)
                     create_window(args, path, state)
         elif args.command == "finish":
             if args.turn != state["turn"]:
@@ -344,6 +355,9 @@ def main():
         command.add_argument("task")
         if name == "start":
             command.add_argument("--project", required=True)
+        if name in {"start", "resume"}:
+            command.add_argument("--model")
+            command.add_argument("--effort", choices=("low", "medium", "high", "xhigh", "max"))
         if name in {"reply", "resume"}:
             command.add_argument("--request-id", required=True)
         if name == "finish":
