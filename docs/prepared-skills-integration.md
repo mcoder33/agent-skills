@@ -8,11 +8,11 @@
 
 | Источник | Перенесённый результат |
 | --- | --- |
-| [PR #13](https://github.com/mcoder33/codex-skills/pull/13), `b856536` | Удалены прежний execute-handoff, UI, сценарии и фрагмент; из активных руководств убраны вызовы и выбор по таймеру |
-| [PR #15](https://github.com/mcoder33/codex-skills/pull/15), `3f7c9de` | Сохранены пути чтения по коду, протокол ролей и обратных связей, примеры и исторический отчёт 0.2.0 |
-| [PR #16](https://github.com/mcoder33/codex-skills/pull/16), `15fecea` | Добавлено [дополнение к оценке](skill-patches/estimate-unresolved-forks.md): нерешённый выбор останавливает передачу задачи |
-| [PR #17](https://github.com/mcoder33/codex-skills/pull/17), `b580f95` | Прежний cohesive-development заменён go-development 0.3.0 со справками по данным/API, конкурентности, проверкам и lifecycle |
-| [PR #18](https://github.com/mcoder33/codex-skills/pull/18), `612603b` | Добавлен clear-communication 0.1.0 со справками, UI, фрагментом подключения и отчётом проверки |
+| [PR #13](https://github.com/mcoder33/agent-skills/pull/13), `b856536` | Удалены прежний execute-handoff, UI, сценарии и фрагмент; из активных руководств убраны вызовы и выбор по таймеру |
+| [PR #15](https://github.com/mcoder33/agent-skills/pull/15), `3f7c9de` | Сохранены пути чтения по коду, протокол ролей и обратных связей, примеры и исторический отчёт 0.2.0 |
+| [PR #16](https://github.com/mcoder33/agent-skills/pull/16), `15fecea` | Добавлено [дополнение к оценке](skill-patches/estimate-unresolved-forks.md): нерешённый выбор останавливает передачу задачи |
+| [PR #17](https://github.com/mcoder33/agent-skills/pull/17), `b580f95` | Прежний cohesive-development заменён go-development 0.3.0 со справками по данным/API, конкурентности, проверкам и lifecycle |
+| [PR #18](https://github.com/mcoder33/agent-skills/pull/18), `612603b` | Добавлен clear-communication 0.1.0 со справками, UI, фрагментом подключения и отчётом проверки |
 
 Порядок номеров PR не использовался как порядок применения. Go-версия из #17
 уже содержит основу #15: `agent-workflow.md` перенесён без изменений, остальные

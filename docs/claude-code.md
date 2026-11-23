@@ -21,20 +21,20 @@
 В сеансе Claude Code — одной командой (маркетплейс добавляется автоматически):
 
 ```text
-/plugin install codex-skills --marketplace mcoder33/codex-skills
+/plugin install codex-skills --marketplace mcoder33/agent-skills
 ```
 
 Или в два шага:
 
 ```text
-/plugin marketplace add mcoder33/codex-skills
+/plugin marketplace add mcoder33/agent-skills
 /plugin install codex-skills@codex-skills
 ```
 
 Из shell:
 
 ```sh
-claude plugin marketplace add mcoder33/codex-skills
+claude plugin marketplace add mcoder33/agent-skills
 claude plugin install codex-skills@codex-skills
 claude plugin install go-development@codex-skills       # по необходимости
 claude plugin install grafana-dashboards@codex-skills   # по необходимости
@@ -49,14 +49,14 @@ claude plugin install grafana-dashboards@codex-skills   # по необходи�
 
 Навыки также подключаются автоматически по описанию, без явного вызова.
 
-Для закреплённой версии добавьте маркетплейс с тегом: `claude plugin marketplace add mcoder33/codex-skills@<тег>`.
+Для закреплённой версии добавьте маркетплейс с тегом: `claude plugin marketplace add mcoder33/agent-skills@<тег>`.
 
 ### Из локального клона
 
 Для разработки навыков добавьте клон как маркетплейс из каталога — правки в `skills/` подхватываются в следующем сеансе или по `/reload-plugins`, без переустановки:
 
 ```sh
-claude plugin marketplace add ./codex-skills
+claude plugin marketplace add ./agent-skills
 claude plugin install codex-skills@codex-skills
 ```
 

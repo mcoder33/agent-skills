@@ -1,4 +1,4 @@
-# Codex Skills
+# Agent Skills
 
 16 навыков для работы с Codex. С ними можно задать вопрос Claude или Kimi, проверить план, разработать Go-код, настроить дашборд и сохранить ход обсуждения. Основной язык инструкций — русский.
 
@@ -46,9 +46,9 @@ $kimi Продолжи тот же разбор и предложи индекс
 Репозиторий также является маркетплейсом плагинов Claude Code — навыки ставятся прямо из него:
 
 ```text
-/plugin install codex-skills --marketplace mcoder33/codex-skills
-/plugin install go-development --marketplace mcoder33/codex-skills
-/plugin install grafana-dashboards --marketplace mcoder33/codex-skills
+/plugin install codex-skills --marketplace mcoder33/agent-skills
+/plugin install go-development --marketplace mcoder33/agent-skills
+/plugin install grafana-dashboards --marketplace mcoder33/agent-skills
 ```
 
 Вызов: `/codex-skills:clear-communication …` вместо `$clear-communication …`. Состав плагинов, постоянный режим и карта Obsidian — в [руководстве для Claude Code](docs/claude-code.md).
@@ -74,7 +74,7 @@ $kimi Продолжи тот же разбор и предложи индекс
 | Посмотреть статистику делегирования | [delegation-stats](skills/delegation-stats/SKILL.md) | Локальный Markdown-отчёт по событиям Codex |
 | Улучшать инструкции по завершённым сессиям | [session-retrospective](skills/session-retrospective/SKILL.md) | Проверенная небольшая правка двух dialogue-навыков либо обоснованный отказ от изменения |
 
-Каталог описывает файлы этой ветки. Для воспроизводимой установки выбирайте [тег релиза](https://github.com/mcoder33/codex-skills/releases) и читайте документацию на этом теге.
+Каталог описывает файлы этой ветки. Для воспроизводимой установки выбирайте [тег релиза](https://github.com/mcoder33/agent-skills/releases) и читайте документацию на этом теге.
 
 ## Установка и использование
 
@@ -98,7 +98,7 @@ $kimi Продолжи тот же разбор и предложи индекс
 
 Переносимое [дополнение к оценке задач](docs/skill-patches/estimate-unresolved-forks.md) останавливает передачу задачи при нерешённом выборе. Оно встраивается в существующий навык оценки и не является отдельным навыком набора.
 
-[История интеграции навыков](docs/prepared-skills-integration.md) описывает изменения относительно v0.4.1. Опубликованные версии перечислены в [GitHub Releases](https://github.com/mcoder33/codex-skills/releases).
+[История интеграции навыков](docs/prepared-skills-integration.md) описывает изменения относительно v0.4.1. Опубликованные версии перечислены в [GitHub Releases](https://github.com/mcoder33/agent-skills/releases).
 
 Runtime не нужен для обычного вызова навыка. Ретроспектива требует отдельного разрешения на изменения; установка не создаёт расписание. Статистика не показывает фактические списания за использование моделей.
 
