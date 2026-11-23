@@ -9,8 +9,8 @@
 Нужны Git и клиент Codex с поддержкой навыков. Команды ниже рассчитаны на macOS/Linux и shell; Python 3.11+ нужен для проверок и Python-скриптов, а не для чтения обычного `SKILL.md`.
 
 ```sh
-git clone https://github.com/mcoder33/codex-skills.git
-cd codex-skills
+git clone https://github.com/mcoder33/agent-skills.git
+cd agent-skills
 KIT_HOME="${CODEX_HOME:-$HOME/.codex}"
 ```
 
