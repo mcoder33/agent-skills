@@ -38,6 +38,24 @@ def default_profile():
     return selected if selected.exists() or selected.is_symlink() else config_home / "stealthbox/config.json"
 
 
+class InvalidWorkspace(ValueError):
+    pass
+
+
+def read_workspace(profile):
+    workspace = json.loads(profile.expanduser().read_text())["workspace"]
+    host = workspace["host"]
+    if (not isinstance(host, str) or not host or host.startswith("-")
+            or not PurePosixPath(workspace["remote_dir"]).is_absolute()):
+        raise InvalidWorkspace("profile requires a VM SSH host and an absolute remote_dir")
+    return workspace
+
+
+def ssh_command(workspace, remote_command):
+    return ["ssh", "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10",
+            "--", workspace["host"], remote_command]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", type=Path, default=default_profile(),
@@ -46,11 +64,8 @@ def main():
     parser.add_argument("args", nargs=argparse.REMAINDER, help="Task ID and operation arguments")
     args = parser.parse_args()
     try:
-        workspace = json.loads(args.profile.expanduser().read_text())["workspace"]
-        host = workspace["host"]
+        workspace = read_workspace(args.profile)
         directory = PurePosixPath(workspace["remote_dir"])
-        if not isinstance(host, str) or not host or host.startswith("-") or not directory.is_absolute():
-            parser.error("profile requires a VM SSH host and an absolute remote_dir")
         source = Path(__file__).with_name("claude_task.py").read_text(encoding="utf-8")
         request = {
             "args": ["--config", str(directory / "config.json"), args.action, *args.args],
@@ -59,9 +74,11 @@ def main():
         }
         remote_command = "python3 -c " + shlex.quote(REMOTE)
         result = subprocess.run(
-            ["ssh", "-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "--", host, remote_command],
+            ssh_command(workspace, remote_command),
             input=json.dumps(request).encode())
         return result.returncode
+    except InvalidWorkspace as exc:
+        parser.error(str(exc))
     except (OSError, ValueError, KeyError, TypeError) as exc:
         parser.exit(1, f"stealthbox_claude: {exc}\n")
 
